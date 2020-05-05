@@ -1,9 +1,9 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require "securerandom"
+load "uuid/uuid.rb"
 
-# The uuid filter allows you to generate a
+# The uuidv1 filter allows you to generate a
 # https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
 # and add it as a field to each processed event.
 #
@@ -17,8 +17,8 @@ require "securerandom"
 # https://tools.ietf.org/html/rfc4122[RFC 4122]) and will be
 # represented as a standard hexadecimal string format, e.g.
 # "e08806fe-02af-406c-bbde-8a5ae4475e57".
-class LogStash::Filters::Uuid < LogStash::Filters::Base
-  config_name "uuid"
+class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
+  config_name "uuidv1"
 
   # Select the name of the field where the generated UUID should be
   # stored.
@@ -52,18 +52,20 @@ class LogStash::Filters::Uuid < LogStash::Filters::Base
 
   public
   def filter(event)
-    
-    # SecureRandom.uuid returns a non UTF8 string and since
-    # only UTF8 strings can be passed to a LogStash::Event
-    # we need to reencode it here
-    if overwrite
-      event.set(target, SecureRandom.uuid.force_encoding(Encoding::UTF_8))
-    elsif event.get(target).nil?
-      event.set(target, SecureRandom.uuid.force_encoding(Encoding::UTF_8))
-    end
+    if event.get('nb_id')
+  		filter_matched(event)
+      return
+  	end
 
-    filter_matched(event)
+  	eventCreatedAt = event.get('timestamp')
+  	if !eventCreatedAt
+  		id = UUID.create()
+  	else
+  		id = UUID.create(time=eventCreatedAt)
+  	end
+
+  	event.set('nb_id', id.to_s)
+  	filter_matched(event)
   end # def filter
 
 end # class LogStash::Filters::Uuid
-

@@ -3,7 +3,7 @@ require_relative "../spec_helper"
 require "logstash/plugin"
 require "logstash/event"
 
-describe LogStash::Filters::Uuid do
+describe LogStash::Filters::Uuidv1 do
 
   let(:overwrite)   { false }
   let(:target)     { "target" }
