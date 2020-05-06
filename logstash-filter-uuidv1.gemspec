@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
 
   s.name            = 'logstash-filter-uuidv1'
-  s.version         = '3.0.5'
+  s.version         = '1.0.0'
   s.licenses        = ['Apache License (2.0)']
   s.summary         = "Adds a UUID to events"
   s.description     = "This gem is a Logstash plugin based on elastic UUID plugin."
