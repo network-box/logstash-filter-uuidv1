@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-load "uuid/uuid.rb"
+require "uuid/uuid"
 
 # The uuidv1 filter allows you to generate a
 # https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
@@ -52,7 +52,7 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
 
   public
   def filter(event)
-    if event.get('nb_id')
+    if event.get(target)
   		filter_matched(event)
       return
   	end
@@ -64,7 +64,7 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
   		id = UUID.create(time=eventCreatedAt)
   	end
 
-  	event.set('nb_id', id.to_s)
+  	event.set(target, id.to_s)
   	filter_matched(event)
   end # def filter
 
