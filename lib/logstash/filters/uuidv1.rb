@@ -53,19 +53,19 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
   public
   def filter(event)
     if event.get(target)
-  		filter_matched(event)
+      filter_matched(event)
       return
-  	end
+    end
 
-  	eventCreatedAt = event.get('timestamp')
-  	if !eventCreatedAt
-  		id = UUID.create()
-  	else
-  		id = UUID.create(time=eventCreatedAt)
-  	end
+    eventCreatedAt = event.get('timestamp')
+    if !eventCreatedAt
+      id = UUID.create()
+    else
+      id = UUID.create(time=eventCreatedAt)
+    end
 
-  	event.set(target, id.to_s)
-  	filter_matched(event)
+    event.set(target, id.to_s)
+    filter_matched(event)
   end # def filter
 
 end # class LogStash::Filters::Uuid
