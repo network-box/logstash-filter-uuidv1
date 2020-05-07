@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require "uuid/uuid"
+require_relative "uuid"
 
 # The uuidv1 filter allows you to generate a
 # https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
