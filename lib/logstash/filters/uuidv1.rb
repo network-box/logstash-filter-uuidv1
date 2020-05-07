@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require_relative "uuid"
+require_relative "uuidlib"
 
 # The uuidv1 filter allows you to generate a
 # https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
@@ -13,7 +13,7 @@ require_relative "uuid"
 # content is processed (i.e. a hash) you should use the
 # <<plugins-filters-fingerprint,fingerprint filter>> instead.
 #
-# The generated UUIDs follow the version 4 definition in
+# The generated UUIDs follow the version 1 definition in
 # https://tools.ietf.org/html/rfc4122[RFC 4122]) and will be
 # represented as a standard hexadecimal string format, e.g.
 # "e08806fe-02af-406c-bbde-8a5ae4475e57".
@@ -26,7 +26,7 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
   # Example:
   # [source,ruby]
   #     filter {
-  #       uuid {
+  #       uuidv1 {
   #         target => "uuid"
   #       }
   #     }
@@ -39,7 +39,7 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
   # Example:
   # [source,ruby]
   #    filter {
-  #       uuid {
+  #       uuidv1 {
   #         target    => "uuid"
   #         overwrite => true
   #       }
@@ -52,20 +52,20 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
 
   public
   def filter(event)
-    if event.get(target)
+    if event.get(target) && !overwrite
       filter_matched(event)
       return
     end
 
     eventCreatedAt = event.get('timestamp')
     if !eventCreatedAt
-      id = UUID.create()
+      id = UUIDGenerator.create()
     else
-      id = UUID.create(time=eventCreatedAt)
+      id = UUIDGenerator.create(time=eventCreatedAt)
     end
 
     event.set(target, id.to_s)
     filter_matched(event)
   end # def filter
 
-end # class LogStash::Filters::Uuid
+end # class LogStash::Filters::Uuidv1

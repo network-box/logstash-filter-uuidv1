@@ -27,7 +27,7 @@
 end
 
 # Pure ruby UUID generator, which is compatible with RFC4122
-class UUID
+class UUIDGenerator
 	# UUID epoch is 15th Oct. 1582
 	UNIXEpoch = 0x01B21DD213814000 # in 100-nanoseconds resolution
 
