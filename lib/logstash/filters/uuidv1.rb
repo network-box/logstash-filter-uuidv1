@@ -1,7 +1,7 @@
 # encoding: utf-8
 require "logstash/filters/base"
 require "logstash/namespace"
-require_relative "uuidlib"
+require "uuidtools";
 
 # The uuidv1 filter allows you to generate a
 # https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
@@ -57,11 +57,16 @@ class LogStash::Filters::Uuidv1 < LogStash::Filters::Base
       return
     end
 
-    eventCreatedAt = event.get('timestamp')
+    begin
+      eventCreatedAt = Time.parse(event.get('@timestamp').to_s);
+    rescue
+      eventCreatedAt = false
+    end
+
     if !eventCreatedAt
-      id = UUIDGenerator.create()
+      id = UUIDTools::UUID.timestamp_create()
     else
-      id = UUIDGenerator.create(time=eventCreatedAt)
+      id = UUIDTools::UUID.timestamp_create(eventCreatedAt);
     end
 
     event.set(target, id.to_s)
